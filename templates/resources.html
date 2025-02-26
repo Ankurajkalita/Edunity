@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Resources{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Learning Resources Section -->
+    <div class="col-md-4 mb-4">
+        <div class="card animate-fade-in h-100">
+            <div class="card-body">
+                <h2 class="h3 mb-4">📚 Learning Resources</h2>
+                <div class="mb-4">
+                    <select class="form-select" id="subjectSelect">
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="resourcesList" class="list-group">
+                    {% for name, link in subjects[subjects.keys()|list|first] %}
+                    <a href="{{ link }}" target="_blank" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        {{ name }}
+                        <span class="badge bg-primary rounded-pill">→</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Summary Generator Section -->
+    <div class="col-md-4 mb-4">
+        <div class="card animate-fade-in h-100" style="animation-delay: 0.2s">
+            <div class="card-body">
+                <h2 class="h3 mb-4">📝 Course Summary</h2>
+                <p class="lead mb-4">Get an AI-powered summary of any course content!</p>
+                <div class="mb-4">
+                    <input type="text" class="form-control mb-3" id="courseUrl" placeholder="Enter course URL">
+                    <button class="btn btn-primary w-100" id="generateSummary">
+                        <span class="d-flex align-items-center justify-content-center">
+                            <span class="me-2">🤖</span>
+                            Generate Summary
+                        </span>
+                    </button>
+                </div>
+                <div id="summaryResult" style="display: none;">
+                    <h4 class="h5 mb-3">
+                        <span class="d-flex align-items-center">
+                            <span class="me-2">✨</span>
+                            AI-Generated Summary:
+                        </span>
+                    </h4>
+                    <div class="p-3 rounded" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent-color);">
+                        <div id="summaryContent" class="ai-content" style="max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scholarship Finder Section -->
+    <div class="col-md-4 mb-4">
+        <div class="card animate-fade-in h-100" style="animation-delay: 0.4s">
+            <div class="card-body">
+                <h2 class="h3 mb-4">🎓 Scholarship Finder</h2>
+                <div class="mb-4">
+                    <input type="text" class="form-control" id="scholarshipSearch" placeholder="Enter your study level (e.g., High School, STEM, College)">
+                </div>
+                <div id="scholarshipResults" class="list-group" style="max-height: 400px; overflow-y: auto;">
+                    {% for scholarship in scholarships %}
+                    <div class="list-group-item">
+                        <h5 class="mb-1">{{ scholarship.name }}</h5>
+                        <p class="mb-1"><small>Eligibility: {{ scholarship.eligibility }}</small></p>
+                        <a href="{{ scholarship.apply }}" target="_blank" class="btn btn-sm btn-primary">Apply Now</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Links Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card animate-fade-in" style="animation-delay: 0.6s">
+            <div class="card-body">
+                <h2 class="h3 mb-4">🔗 Quick Links</h2>
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <a href="https://www.coursera.org/" target="_blank" class="btn btn-outline-primary w-100">
+                            Coursera
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="https://www.edx.org/" target="_blank" class="btn btn-outline-primary w-100">
+                            edX
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="https://www.udemy.com/" target="_blank" class="btn btn-outline-primary w-100">
+                            Udemy
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="https://www.linkedin.com/learning/" target="_blank" class="btn btn-outline-primary w-100">
+                            LinkedIn Learning
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const subjectSelect = document.getElementById('subjectSelect');
+    const resourcesList = document.getElementById('resourcesList');
+    const scholarshipSearch = document.getElementById('scholarshipSearch');
+    const scholarshipResults = document.getElementById('scholarshipResults');
+    const courseUrl = document.getElementById('courseUrl');
+    const generateSummary = document.getElementById('generateSummary');
+    const summaryResult = document.getElementById('summaryResult');
+    const summaryContent = document.getElementById('summaryContent');
+
+    // Subject selection
+    subjectSelect.addEventListener('change', function() {
+        const subject = this.value;
+        fetch(`/api/resources?subject=${subject}`)
+            .then(response => response.json())
+            .then(data => {
+                resourcesList.innerHTML = data.resources.map(([name, link]) => `
+                    <a href="${link}" target="_blank" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        ${name}
+                        <span class="badge bg-primary rounded-pill">→</span>
+                    </a>
+                `).join('');
+            });
+    });
+
+    // Scholarship search
+    scholarshipSearch.addEventListener('input', async function() {
+        const criteria = this.value.trim();
+        if (criteria) {
+            const response = await fetch('/api/search-scholarships', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ criteria: criteria })
+            });
+
+            const data = await response.json();
+            scholarshipResults.innerHTML = data.scholarships.map(s => `
+                <div class="list-group-item animate-fade-in">
+                    <h5 class="mb-1">${s.name}</h5>
+                    <p class="mb-1"><small>Eligibility: ${s.eligibility}</small></p>
+                    <a href="${s.apply}" target="_blank" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            `).join('') || '<div class="list-group-item">No matching scholarships found.</div>';
+        }
+    });
+
+    // Course summary generation
+    generateSummary.addEventListener('click', async function() {
+        const url = courseUrl.value.trim();
+        if (!url) return;
+
+        this.disabled = true;
+        const originalContent = this.innerHTML;
+        this.innerHTML = `
+            <span class="d-flex align-items-center justify-content-center">
+                <span class="typing-indicator me-2">
+                    <span></span><span></span><span></span>
+                </span>
+                Generating...
+            </span>
+        `;
+        summaryContent.innerHTML = '';
+        summaryResult.style.display = 'none';
+
+        try {
+            const response = await fetch('/api/summarize-course', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: url })
+            });
+
+            const data = await response.json();
+            if (data.summary) {
+                // Format the summary with better structure
+                const formattedSummary = data.summary
+                    .replace(/•/g, '◆')  // Replace bullets with diamonds
+                    .replace(/\n/g, '<br>')
+                    .replace(/◆\s*([^<]+)/g, '<div class="mb-2">◆ $1</div>');  // Add spacing between points
+                
+                summaryContent.innerHTML = formattedSummary;
+                summaryResult.style.display = 'block';
+                summaryResult.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                summaryContent.innerHTML = `
+                    <div class="text-center">
+                        <span style="color: #ff6b6b;">❌</span>
+                        Failed to generate summary. Please try again.
+                    </div>
+                `;
+                summaryResult.style.display = 'block';
+            }
+        } catch (error) {
+            summaryContent.innerHTML = `
+                <div class="text-center">
+                    <span style="color: #ff6b6b;">❌</span>
+                    An error occurred. Please try again.
+                </div>
+            `;
+            summaryResult.style.display = 'block';
+        }
+
+        this.disabled = false;
+        this.innerHTML = originalContent;
+    });
+});
+</script>
+{% endblock %} 

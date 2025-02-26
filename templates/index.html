@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center animate-fade-in">
+    <div class="col-md-8 text-center mb-5">
+        <h1 class="display-4 mb-4">Welcome to Edunity</h1>
+        <p class="lead">Your AI-powered educational companion for career guidance, resources, and support.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 animate-fade-in" style="animation-delay: 0.1s">
+            <div class="card-body text-center">
+                <h3 class="h4 mb-3">🤖 AI Mentor</h3>
+                <p>Get personalized career guidance and study advice from our AI mentor.</p>
+                <a href="/mentor" class="btn btn-primary">Start Chat</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 animate-fade-in" style="animation-delay: 0.2s">
+            <div class="card-body text-center">
+                <h3 class="h4 mb-3">📚 Resources</h3>
+                <p>Access free learning materials, courses, and scholarship opportunities.</p>
+                <a href="/resources" class="btn btn-primary">Browse Resources</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 animate-fade-in" style="animation-delay: 0.3s">
+            <div class="card-body text-center">
+                <h3 class="h4 mb-3">📄 Resume Builder</h3>
+                <p>Create professional resumes with AI assistance and expert templates.</p>
+                <a href="/resume-builder" class="btn btn-primary">Build Resume</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 animate-fade-in" style="animation-delay: 0.4s">
+            <div class="card-body text-center">
+                <h3 class="h4 mb-3">🛠️ Support</h3>
+                <p>Find micro-jobs and local learning centers for additional support.</p>
+                <a href="/support" class="btn btn-primary">Get Support</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 justify-content-center animate-fade-in" style="animation-delay: 0.5s">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3 class="h4 mb-3">🎯 Start Your Journey</h3>
+                <p>Begin your educational journey with personalized guidance and support. Our AI-powered platform is here to help you succeed.</p>
+                <a href="/mentor" class="btn btn-primary btn-lg">Get Started</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

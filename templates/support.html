@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Support{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 mb-4">
+        <div class="card animate-fade-in">
+            <div class="card-body">
+                <h2 class="h3 mb-4">💼 Skill-Based Micro-Jobs</h2>
+                <p class="lead">Find small remote jobs to earn money while studying!</p>
+                
+                <div class="list-group mb-4">
+                    <a href="https://www.freelancer.com/" target="_blank" class="list-group-item list-group-item-action">
+                        <h5 class="mb-1">Freelancer</h5>
+                        <p class="mb-1">Find freelance projects in various fields</p>
+                    </a>
+                    <a href="https://www.upwork.com/" target="_blank" class="list-group-item list-group-item-action">
+                        <h5 class="mb-1">Upwork</h5>
+                        <p class="mb-1">Professional freelancing platform</p>
+                    </a>
+                    <a href="https://www.fiverr.com/" target="_blank" class="list-group-item list-group-item-action">
+                        <h5 class="mb-1">Fiverr</h5>
+                        <p class="mb-1">Offer your services starting at $5</p>
+                    </a>
+                </div>
+
+                <div class="text-center">
+                    <a href="https://www.mastersportal.com/articles/3139/work-from-dorm-12-online-jobs-for-students-around-the-world.html" target="_blank" class="btn btn-primary">
+                        Learn More About Student Jobs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card animate-fade-in" style="animation-delay: 0.2s">
+            <div class="card-body">
+                <h2 class="h3 mb-4">📍 Find Local Learning Centers</h2>
+                <p class="lead">Discover free education centers near you!</p>
+
+                <div class="mb-4">
+                    <input type="text" class="form-control" id="locationInput" placeholder="Enter your city or area (e.g., 'New Delhi, India')">
+                </div>
+
+                <div class="text-center">
+                    <button id="searchCenters" class="btn btn-primary">Find Centers</button>
+                </div>
+
+                <div id="mapLink" class="mt-4 text-center" style="display: none;">
+                    <a href="#" target="_blank" class="btn btn-outline-primary">
+                        View Centers on Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-12">
+        <div class="card animate-fade-in" style="animation-delay: 0.4s">
+            <div class="card-body">
+                <h2 class="h3 mb-4">📌 Important Bookmarker</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">🎯 Quick Access</h5>
+                                <p class="card-text">Save and organize your most important educational resources and links.</p>
+                                <button class="btn btn-primary" onclick="saveCurrentPage()">Save Current Page</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">🔍 Find Support</h5>
+                                <p class="card-text">Looking for additional support? Visit our Community Hub for expert guidance.</p>
+                                <a href="{{ url_for('community') }}" class="btn btn-primary">Visit Community Hub</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">📚 Resource Library</h5>
+                                <p class="card-text">Access your saved resources and bookmarks in one organized place.</p>
+                                <button class="btn btn-primary" onclick="viewSavedResources()">View Library</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const locationInput = document.getElementById('locationInput');
+    const searchCenters = document.getElementById('searchCenters');
+    const mapLink = document.getElementById('mapLink');
+
+    searchCenters.addEventListener('click', function() {
+        const location = locationInput.value.trim();
+        if (location) {
+            const mapsUrl = `https://www.google.com/maps/search/free+tuition+center+near+${encodeURIComponent(location)}`;
+            mapLink.querySelector('a').href = mapsUrl;
+            mapLink.style.display = 'block';
+        }
+    });
+});
+
+function saveCurrentPage() {
+    // In a real implementation, this would save to localStorage or a backend
+    alert('Page saved to bookmarks! This is a demo feature.');
+}
+
+function viewSavedResources() {
+    // In a real implementation, this would show saved resources
+    alert('Resource library will be available in the full version.');
+}
+</script>
+{% endblock %} 
