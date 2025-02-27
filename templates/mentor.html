@@ -1,204 +1,458 @@
 {% extends "base.html" %}
 
-{% block title %}AI Mentor{% endblock %}
-
-{% block extra_css %}
-<style>
-    .chat-container::-webkit-scrollbar {
-        width: 8px;
-    }
-    
-    .chat-container::-webkit-scrollbar-track {
-        background: var(--secondary-bg);
-    }
-    
-    .chat-container::-webkit-scrollbar-thumb {
-        background: var(--accent-color);
-        border-radius: 4px;
-    }
-
-    .typing-indicator {
-        display: inline-block;
-        padding-left: 5px;
-    }
-
-    .typing-indicator span {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        background-color: var(--text-color);
-        border-radius: 50%;
-        margin: 0 2px;
-        opacity: 0.4;
-        animation: typing 1s infinite;
-    }
-
-    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes typing {
-        0%, 100% { opacity: 0.4; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.2); }
-    }
-</style>
-{% endblock %}
+{% block title %}AI Career Mentor{% endblock %}
 
 {% block content %}
 <div class="chat-page">
     <!-- Sidebar -->
     <div class="chat-sidebar">
         <div class="sidebar-header">
-            <h3>Chat History</h3>
-            <button id="newChatBtn" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> New Chat
+            <h3><i class="fas fa-robot me-2"></i>AI Mentor</h3>
+            <button class="btn btn-new-chat" onclick="startNewChat()">
+                <i class="fas fa-plus"></i>
             </button>
         </div>
-        <div class="chat-sessions">
-            <!-- Chat sessions will be added here dynamically -->
+        <div class="chat-history">
+            <div class="history-item active">
+                <i class="fas fa-comment-dots me-2"></i>
+                <span>Current Chat</span>
+            </div>
+            <!-- Chat history items will be added here dynamically -->
         </div>
     </div>
 
     <!-- Main Chat Area -->
     <div class="chat-main">
         <div class="chat-container">
-            <div id="messageArea" class="message-area">
+            <div class="message-area">
+                {% if not messages %}
                 <div class="welcome-message">
-                    <h2>Welcome to AI Career Mentor</h2>
-                    <p class="lead">I'm here to help you with:</p>
-                    <ul>
-                        <li>Career planning and guidance</li>
-                        <li>Skill development recommendations</li>
-                        <li>Study plans and resources</li>
-                        <li>Industry insights and trends</li>
-                    </ul>
-                    <p>How can I assist you today?</p>
+                    <h1>What can I help with?</h1>
+                    <p class="welcome-subtitle">Ask me anything about your career, education, or professional development.</p>
                 </div>
+                {% endif %}
+
                 {% for message in messages %}
                 <div class="chat-message {% if message.role == 'user' %}user-message{% else %}bot-message{% endif %} animate-fade-in">
-                    {{ message.content | safe }}
+                    <div class="message-content">
+                        {{ message.content | safe }}
+                    </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
+
         <div class="chat-input-area">
             <form id="chatForm" class="chat-form">
                 <div class="input-group">
-                    <input type="text" id="userInput" class="form-control" placeholder="Type your message here..." required>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> Send
+                    <input type="text" id="userInput" class="form-control" placeholder="Ask anything..." required>
+                    <button class="btn btn-send" type="submit">
+                        <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
             </form>
-            <div id="typingIndicator" class="typing-indicator d-none">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
         </div>
     </div>
 </div>
+
+<style>
+/* Enhanced Chat Styles */
+.chat-page {
+    display: flex;
+    height: 100vh;
+    background: #1E1E1E;
+    color: white;
+}
+
+/* Sidebar Styles */
+.chat-sidebar {
+    width: 260px;
+    background: #2D2D2D;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.btn-new-chat {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-new-chat:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.history-item {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.history-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+/* Main Chat Area Styles */
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    background: #1E1E1E;
+}
+
+.message-area {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.welcome-message {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.welcome-message h1 {
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.welcome-subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
+}
+
+.chat-message {
+    position: relative;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    max-width: 85%;
+    animation: messageSlide 0.3s ease-out;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+@keyframes messageSlide {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-message {
+    margin-left: auto;
+    background: #2D2D2D;
+    color: white;
+}
+
+.bot-message {
+    margin-right: auto;
+    background: #2D2D2D;
+    color: white;
+}
+
+.message-content {
+    margin: 0;
+}
+
+.chat-input-area {
+    padding: 2rem;
+    background: #1E1E1E;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-form {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.chat-form .input-group {
+    background: #2D2D2D;
+    border-radius: 8px;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.chat-form .form-control {
+    border: none;
+    background: transparent;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    color: white;
+    flex: 1;
+}
+
+.chat-form .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.chat-form .form-control:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-send {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+.btn-send:hover {
+    color: white;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1E1E1E;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2D2D2D;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3D3D3D;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chat-sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        bottom: 0;
+        z-index: 100;
+        border-right: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-main {
+        margin-bottom: 60px;
+    }
+
+    .sidebar-header {
+        padding: 1rem;
+    }
+
+    .chat-history {
+        display: none;
+    }
+
+    .chat-container {
+        padding: 1rem;
+    }
+
+    .welcome-message h1 {
+        font-size: 2rem;
+    }
+
+    .chat-input-area {
+        padding: 1rem;
+    }
+
+    .chat-message {
+        max-width: 90%;
+    }
+}
+
+/* Typing Indicator Styles */
+.typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 8px;
+}
+
+.typing-dots span {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: typing 1s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 100% { transform: translateY(0); opacity: 0.5; }
+    50% { transform: translateY(-4px); opacity: 1; }
+}
+
+.error-message {
+    color: #ff6b6b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.error-message i {
+    font-size: 1.2rem;
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chatForm');
     const userInput = document.getElementById('userInput');
-    const messageArea = document.getElementById('messageArea');
-    const typingIndicator = document.getElementById('typingIndicator');
-    const chatSessions = document.querySelector('.chat-sessions');
-    const newChatBtn = document.getElementById('newChatBtn');
-    
-    let currentChatId = Date.now().toString();
-    
-    // Function to create a new chat session
-    function createNewChat() {
-        currentChatId = Date.now().toString();
-        const sessionEl = document.createElement('div');
-        sessionEl.className = 'chat-session active';
-        sessionEl.dataset.chatId = currentChatId;
-        sessionEl.innerHTML = `
-            <i class="fas fa-comments"></i>
-            <span>New Conversation</span>
-            <div class="session-actions">
-                <button class="btn btn-sm btn-link rename-chat">
-                    <i class="fas fa-edit"></i>
-                </button>
+    const messageArea = document.querySelector('.message-area');
+
+    function scrollToBottom() {
+        const chatContainer = document.querySelector('.chat-container');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'chat-message bot-message typing-indicator';
+        indicator.innerHTML = `
+            <div class="message-content">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
         `;
-        chatSessions.insertBefore(sessionEl, chatSessions.firstChild);
-        messageArea.innerHTML = ''; // Clear messages
-        return sessionEl;
+        messageArea.appendChild(indicator);
+        scrollToBottom();
+        return indicator;
     }
-    
-    // Initialize with first chat
-    createNewChat();
-    
-    // New chat button handler
-    newChatBtn.addEventListener('click', () => {
-        document.querySelectorAll('.chat-session').forEach(s => s.classList.remove('active'));
-        createNewChat();
-    });
-    
+
+    function addMessage(content, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'} animate-fade-in`;
+        messageDiv.innerHTML = `
+            <div class="message-content">${content}</div>
+        `;
+        messageArea.appendChild(messageDiv);
+        scrollToBottom();
+    }
+
     chatForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         const message = userInput.value.trim();
         if (!message) return;
+
+        // Clear input and disable it
+        userInput.value = '';
+        userInput.disabled = true;
         
         // Add user message
-        const userMessageEl = document.createElement('div');
-        userMessageEl.className = 'chat-message user-message animate-fade-in';
-        userMessageEl.textContent = message;
-        messageArea.appendChild(userMessageEl);
-        
-        // Clear input and scroll to bottom
-        userInput.value = '';
-        messageArea.scrollTop = messageArea.scrollHeight;
-        
+        addMessage(message, true);
+
         // Show typing indicator
-        typingIndicator.classList.remove('d-none');
-        
+        const typingIndicator = showTypingIndicator();
+
         try {
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ message: message })
             });
-            
+
             const data = await response.json();
             
-            // Hide typing indicator
-            typingIndicator.classList.add('d-none');
-            
-            if (data.error) {
-                throw new Error(data.error);
-            }
-            
-            // Add bot response
-            const botMessageEl = document.createElement('div');
-            botMessageEl.className = 'chat-message bot-message animate-fade-in';
-            botMessageEl.innerHTML = data.response;
-            messageArea.appendChild(botMessageEl);
-            
-            // Update chat session title with first few words of user message
-            const activeSession = document.querySelector('.chat-session.active span');
-            if (activeSession) {
-                activeSession.textContent = message.slice(0, 30) + (message.length > 30 ? '...' : '');
+            // Remove typing indicator
+            typingIndicator.remove();
+
+            if (response.ok) {
+                addMessage(data.response);
+            } else {
+                throw new Error(data.error || 'Failed to get response');
             }
         } catch (error) {
-            // Hide typing indicator
-            typingIndicator.classList.add('d-none');
-            
-            // Show error message
-            const errorEl = document.createElement('div');
-            errorEl.className = 'chat-message error-message animate-fade-in';
-            errorEl.textContent = 'Error: ' + error.message;
-            messageArea.appendChild(errorEl);
+            console.error('Error:', error);
+            const errorMessage = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Sorry, I encountered an error. Please try again.
+                </div>
+            `;
+            addMessage(errorMessage);
+        } finally {
+            // Re-enable input
+            userInput.disabled = false;
+            userInput.focus();
         }
-        
-        // Scroll to bottom
-        messageArea.scrollTop = messageArea.scrollHeight;
     });
+
+    // Function to start a new chat
+    window.startNewChat = function() {
+        if (confirm('Start a new chat? This will clear the current conversation.')) {
+            messageArea.innerHTML = `
+                <div class="welcome-message">
+                    <h1>What can I help with?</h1>
+                    <p class="welcome-subtitle">Ask me anything about your career, education, or professional development.</p>
+                </div>
+            `;
+        }
+    };
+
+    // Auto-focus input field
+    userInput.focus();
 });
 </script>
 {% endblock %} 

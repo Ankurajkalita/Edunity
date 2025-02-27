@@ -1,128 +1,610 @@
 {% extends "base.html" %}
 
-{% block title %}Support{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 mb-4">
-        <div class="card animate-fade-in">
+<div class="container py-5 fade-in">
+    <!-- Header Section with particle effect background -->
+    <div class="section-header text-center mb-5 reveal">
+        <div id="particles-js" class="particles-container"></div>
+        <h1 class="display-5 mb-3 glow-text">Student Support Hub</h1>
+        <p class="lead text-light">Find resources, opportunities, and support for your educational journey</p>
+        <div class="header-line"></div>
+    </div>
+
+    <!-- Learning Center Finder Section -->
+    <section class="mb-5 reveal">
+        <div class="card support-card">
             <div class="card-body">
-                <h2 class="h3 mb-4">💼 Skill-Based Micro-Jobs</h2>
-                <p class="lead">Find small remote jobs to earn money while studying!</p>
+                <h3 class="card-title slide-in">
+                    <i class="fas fa-map-marker-alt me-2 bounce"></i>Find Local Learning Centers
+                </h3>
+                <p class="card-text text-light">Discover free learning centers and educational resources near you</p>
                 
-                <div class="list-group mb-4">
-                    <a href="https://www.freelancer.com/" target="_blank" class="list-group-item list-group-item-action">
-                        <h5 class="mb-1">Freelancer</h5>
-                        <p class="mb-1">Find freelance projects in various fields</p>
-                    </a>
-                    <a href="https://www.upwork.com/" target="_blank" class="list-group-item list-group-item-action">
-                        <h5 class="mb-1">Upwork</h5>
-                        <p class="mb-1">Professional freelancing platform</p>
-                    </a>
-                    <a href="https://www.fiverr.com/" target="_blank" class="list-group-item list-group-item-action">
-                        <h5 class="mb-1">Fiverr</h5>
-                        <p class="mb-1">Offer your services starting at $5</p>
-                    </a>
+                <div class="input-group mb-3 search-group">
+                    <div class="input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="locationInput" class="form-control custom-input" 
+                               placeholder="Enter your location"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Type your city or area name">
+                    </div>
+                    <button class="btn btn-primary search-btn ripple" type="button" id="searchCenters">
+                        <span class="button-text">Search</span>
+                        <div class="loading-spinner d-none"></div>
+                    </button>
                 </div>
 
-                <div class="text-center">
-                    <a href="https://www.mastersportal.com/articles/3139/work-from-dorm-12-online-jobs-for-students-around-the-world.html" target="_blank" class="btn btn-primary">
-                        Learn More About Student Jobs
-                    </a>
+                <!-- Results Section -->
+                <div id="searchResults" class="mt-4 text-center d-none fade-in">
+                    <div class="result-card">
+                        <i class="fas fa-map-marked-alt result-icon"></i>
+                        <h4 class="text-light">Learning Centers Found!</h4>
+                        <p class="text-light-50">Click below to view learning centers near your location</p>
+                        <a id="mapsLink" href="#" target="_blank" class="btn btn-primary btn-lg ripple">
+                            <i class="fas fa-external-link-alt me-2"></i>View on Google Maps
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="col-md-6 mb-4">
-        <div class="card animate-fade-in" style="animation-delay: 0.2s">
+    <!-- Micro-Jobs Section -->
+    <section class="mb-5 reveal">
+        <div class="card support-card">
             <div class="card-body">
-                <h2 class="h3 mb-4">📍 Find Local Learning Centers</h2>
-                <p class="lead">Discover free education centers near you!</p>
+                <h3 class="card-title slide-in">
+                    <i class="fas fa-briefcase me-2 bounce"></i>Student Micro-Jobs
+                </h3>
+                <p class="card-text text-light">Find flexible part-time opportunities that fit your schedule</p>
+                
+                <div class="row g-4 mt-2">
+                    <!-- Online Tutoring -->
+                    <div class="col-md-4">
+                        <div class="job-card">
+                            <div class="job-icon">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <h5>Online Tutoring</h5>
+                            <p>Help other students while earning</p>
+                            <div class="job-details">
+                                <span class="badge bg-success">Flexible Hours</span>
+                                <span class="badge bg-info">Remote Work</span>
+                            </div>
+                            <a href="https://www.tutorme.com/become-a-tutor/" class="btn btn-outline-light ripple" target="_blank">
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
 
-                <div class="mb-4">
-                    <input type="text" class="form-control" id="locationInput" placeholder="Enter your city or area (e.g., 'New Delhi, India')">
-                </div>
+                    <!-- Content Writing -->
+                    <div class="col-md-4">
+                        <div class="job-card">
+                            <div class="job-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <h5>Content Writing</h5>
+                            <p>Create educational content</p>
+                            <div class="job-details">
+                                <span class="badge bg-success">Project-based</span>
+                                <span class="badge bg-info">Creative Work</span>
+                            </div>
+                            <a href="https://www.upwork.com/freelance-jobs/education-content-writing/" class="btn btn-outline-light ripple" target="_blank">
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
 
-                <div class="text-center">
-                    <button id="searchCenters" class="btn btn-primary">Find Centers</button>
-                </div>
-
-                <div id="mapLink" class="mt-4 text-center" style="display: none;">
-                    <a href="#" target="_blank" class="btn btn-outline-primary">
-                        View Centers on Google Maps
-                    </a>
+                    <!-- Research Assistant -->
+                    <div class="col-md-4">
+                        <div class="job-card">
+                            <div class="job-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <h5>Research Assistant</h5>
+                            <p>Support academic research</p>
+                            <div class="job-details">
+                                <span class="badge bg-success">Part-time</span>
+                                <span class="badge bg-info">Academic</span>
+                            </div>
+                            <a href="https://www.indeed.com/q-Student-Research-Assistant-jobs.html" class="btn btn-outline-light ripple" target="_blank">
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Online Resources Section -->
+    <section class="mb-5 reveal">
+        <div class="section-header text-center mb-5">
+            <h2 class="display-6 mb-3 glow-text">Educational Resources Hub</h2>
+            <p class="lead text-light">Access high-quality learning materials from trusted platforms</p>
+            <div class="header-line"></div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Programming Resources -->
+            <div class="col-md-4">
+                <div class="resource-card programming-card">
+                    <div class="card-body">
+                        <div class="resource-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h5>Programming Resources</h5>
+                        <ul class="resource-list">
+                            <li>
+                                <a href="https://www.freecodecamp.org/" target="_blank">
+                                    <i class="fas fa-code"></i>
+                                    <span>freeCodeCamp</span>
+                                    <small>Learn to code for free</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.w3schools.com/" target="_blank">
+                                    <i class="fas fa-globe"></i>
+                                    <span>W3Schools</span>
+                                    <small>Web development tutorials</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.codecademy.com/" target="_blank">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>Codecademy</span>
+                                    <small>Interactive coding lessons</small>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mathematics Resources -->
+            <div class="col-md-4">
+                <div class="resource-card math-card">
+                    <div class="card-body">
+                        <div class="resource-icon">
+                            <i class="fas fa-square-root-alt"></i>
+                        </div>
+                        <h5>Mathematics Resources</h5>
+                        <ul class="resource-list">
+                            <li>
+                                <a href="https://www.khanacademy.org/math" target="_blank">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                    <span>Khan Academy</span>
+                                    <small>Free math courses</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.mathway.com/" target="_blank">
+                                    <i class="fas fa-calculator"></i>
+                                    <span>Mathway</span>
+                                    <small>Step-by-step solutions</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.wolframalpha.com/" target="_blank">
+                                    <i class="fas fa-brain"></i>
+                                    <span>Wolfram Alpha</span>
+                                    <small>Computational intelligence</small>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Science Resources -->
+            <div class="col-md-4">
+                <div class="resource-card science-card">
+                    <div class="card-body">
+                        <div class="resource-icon">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <h5>Science Resources</h5>
+                        <ul class="resource-list">
+                            <li>
+                                <a href="https://www.nasa.gov/stem/" target="_blank">
+                                    <i class="fas fa-rocket"></i>
+                                    <span>NASA STEM</span>
+                                    <small>Space science education</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.nationalgeographic.com/education/" target="_blank">
+                                    <i class="fas fa-globe-americas"></i>
+                                    <span>National Geographic</span>
+                                    <small>Earth and life sciences</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://phet.colorado.edu/" target="_blank">
+                                    <i class="fas fa-microscope"></i>
+                                    <span>PhET Simulations</span>
+                                    <small>Interactive science labs</small>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-md-12">
-        <div class="card animate-fade-in" style="animation-delay: 0.4s">
-            <div class="card-body">
-                <h2 class="h3 mb-4">📌 Important Bookmarker</h2>
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">🎯 Quick Access</h5>
-                                <p class="card-text">Save and organize your most important educational resources and links.</p>
-                                <button class="btn btn-primary" onclick="saveCurrentPage()">Save Current Page</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">🔍 Find Support</h5>
-                                <p class="card-text">Looking for additional support? Visit our Community Hub for expert guidance.</p>
-                                <a href="{{ url_for('community') }}" class="btn btn-primary">Visit Community Hub</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">📚 Resource Library</h5>
-                                <p class="card-text">Access your saved resources and bookmarks in one organized place.</p>
-                                <button class="btn btn-primary" onclick="viewSavedResources()">View Library</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+<style>
+:root {
+    --dark-blue: #0a1929;
+    --darker-blue: #061220;
+    --accent-purple: #6b21a8;
+    --glow-purple: rgba(147, 51, 234, 0.3);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(255, 255, 255, 0.1);
+}
 
-{% block extra_js %}
+/* Particles Container */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* Section Header Styles */
+.section-header {
+    position: relative;
+    margin-bottom: 3rem;
+}
+
+.glow-text {
+    color: var(--text-primary);
+    text-shadow: 0 0 10px var(--glow-purple);
+}
+
+.header-line {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-purple), transparent);
+    margin: 1rem auto;
+    border-radius: 2px;
+}
+
+/* Card Styles */
+.support-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.support-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Search Section Styles */
+.input-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.custom-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding-left: 2.5rem;
+    border-radius: 8px;
+}
+
+.custom-input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 2px var(--glow-purple);
+}
+
+.search-btn {
+    background: var(--accent-purple);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    margin-left: 1rem;
+}
+
+.search-btn:hover {
+    background: #7c3aed;
+    transform: translateY(-2px);
+}
+
+/* Result Card Styles */
+.result-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.result-icon {
+    font-size: 3rem;
+    color: var(--accent-purple);
+    margin-bottom: 1rem;
+}
+
+/* Job Card Styles */
+.job-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 1.5rem;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.job-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--accent-purple);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.job-card h5 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.job-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.job-details {
+    margin-bottom: 1rem;
+}
+
+.badge {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+/* Resource Card Styles */
+.resource-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.resource-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--accent-purple);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.resource-card h5 {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.resource-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.resource-list li {
+    margin-bottom: 1rem;
+}
+
+.resource-list a {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.resource-list a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.resource-list i {
+    font-size: 1.2rem;
+    color: var(--accent-purple);
+    margin-bottom: 0.5rem;
+}
+
+.resource-list span {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.resource-list small {
+    color: var(--text-secondary);
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+.bounce {
+    animation: bounce 1s infinite;
+}
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.ripple:active::after {
+    width: 200%;
+    height: 200%;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .row {
+        margin: 0;
+    }
+
+    .col-md-4 {
+        padding: 0.5rem;
+    }
+
+    .search-btn {
+        margin-left: 0;
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .input-wrapper {
+        width: 100%;
+    }
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const locationInput = document.getElementById('locationInput');
-    const searchCenters = document.getElementById('searchCenters');
-    const mapLink = document.getElementById('mapLink');
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 
-    searchCenters.addEventListener('click', function() {
+    // Learning Center Search
+    const searchBtn = document.getElementById('searchCenters');
+    const locationInput = document.getElementById('locationInput');
+    const searchResults = document.getElementById('searchResults');
+    const mapsLink = document.getElementById('mapsLink');
+
+    searchBtn.addEventListener('click', function() {
         const location = locationInput.value.trim();
-        if (location) {
-            const mapsUrl = `https://www.google.com/maps/search/free+tuition+center+near+${encodeURIComponent(location)}`;
-            mapLink.querySelector('a').href = mapsUrl;
-            mapLink.style.display = 'block';
+        if (!location) return;
+
+        // Show loading state
+        searchBtn.disabled = true;
+        searchBtn.querySelector('.button-text').style.display = 'none';
+        searchBtn.querySelector('.loading-spinner').classList.remove('d-none');
+
+        // Generate Google Maps link
+        const mapsUrl = `https://www.google.com/maps/search/learning+centers+near+${encodeURIComponent(location)}`;
+        mapsLink.href = mapsUrl;
+
+        // Simulate loading
+        setTimeout(() => {
+            searchResults.classList.remove('d-none');
+            searchBtn.disabled = false;
+            searchBtn.querySelector('.button-text').style.display = 'inline';
+            searchBtn.querySelector('.loading-spinner').classList.add('d-none');
+        }, 1000);
+    });
+
+    // Handle Enter key in search input
+    locationInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchBtn.click();
         }
     });
+
+    // Intersection Observer for reveal animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+        el.classList.add('reveal-hidden');
+    });
 });
-
-function saveCurrentPage() {
-    // In a real implementation, this would save to localStorage or a backend
-    alert('Page saved to bookmarks! This is a demo feature.');
-}
-
-function viewSavedResources() {
-    // In a real implementation, this would show saved resources
-    alert('Resource library will be available in the full version.');
-}
 </script>
 {% endblock %} 

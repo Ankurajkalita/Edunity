@@ -4,12 +4,12 @@ from fpdf import FPDF
 from bs4 import BeautifulSoup
 import requests
 import os
+from secret import GEMINI_API_KEY, GOOGLE_MAPS_API_KEY
 
 app = Flask(__name__)
 
 # Configure Gemini
-api_key = os.environ.get('GEMINI_API_KEY', 'YOUR_API_KEY_HERE')
-genai.configure(api_key=api_key)
+genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
 # Load Scholarship Data 
@@ -22,21 +22,21 @@ scholarships = [
     {"name": "Rotary Foundation Global Scholarship Grants", "eligibility": "College", "apply": "https://www.rotary.org/en/our-programs/scholarships"},
     {"name": "The NextGen Scholarship", "eligibility": "High school students, low-income", "apply": "https://www.perkconsulting.net/about/nextgen/"}
 ]
-
+            
 subjects = {
-    "Programming": [
-        ("CS50, Harvard", "https://cs50.harvard.edu/"),
-        ("Python.org", "https://www.python.org/"),
-        ("freeCodeCamp", "https://www.freecodecamp.org/")
-    ],
-    "Math": [
-        ("Khan Academy", "https://www.khanacademy.org/"),
-        ("Harvard University", "https://pll.harvard.edu/subject/mathematics/free"),
-        ("The Open University", "https://www.open.edu/openlearn/science-maths-technology/free-courses")
-    ],
-    "Science": [
+                "Programming": [
+                    ("CS50, Harvard", "https://cs50.harvard.edu/"),
+                    ("Python.org", "https://www.python.org/"),
+                    ("freeCodeCamp", "https://www.freecodecamp.org/")
+                ],
+                "Math": [
+                    ("Khan Academy", "https://www.khanacademy.org/"),
+                    ("Harvard University", "https://pll.harvard.edu/subject/mathematics/free"),
+                    ("The Open University", "https://www.open.edu/openlearn/science-maths-technology/free-courses")
+                ],
+                "Science": [
         ("Stanford University", "https://ughb.stanford.edu/courses/approved-courses/science-courses-2024-25"),
-        ("Yale College", "https://science.yalecollege.yale.edu/academics/faculty-resources/science-courses-without-prerequisite"),
+        ("Yale College", "https://science.yalecollege.yale.edu/academics/faculty-resources/science-courses-without-prerequisite")
     ]
 }
 
@@ -60,7 +60,7 @@ def resume_builder():
 
 @app.route('/support')
 def support():
-    return render_template('support.html')
+    return render_template('support.html', google_maps_api_key=GOOGLE_MAPS_API_KEY)
 
 @app.route('/community')
 def community():
@@ -200,10 +200,11 @@ def chat():
         chat_history.append({"role": "assistant", "content": ai_response})
         return jsonify({"response": ai_response})
     except Exception as e:
+        print(f"Error in chat endpoint: {str(e)}")  # Add logging
         # Remove the failed message from chat history
         if len(chat_history) > 0 and chat_history[-1]["role"] == "user":
             chat_history.pop()
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 @app.route('/api/generate-resume', methods=['POST'])
 def generate_resume():
@@ -222,14 +223,14 @@ def generate_resume():
     projects = data.get('projects')
     
     prompt = f"""
-    Create a professional resume for the following details:
-    - Name: {name}
-    - Education: {education}
-    - Skills: {skills}
-    - Experience: {experience}
-    - Projects: {projects}
-    Format it as a well-structured resume with sections and proper formatting.
-    """
+        Create a professional resume for the following details:
+        - Name: {name}
+        - Education: {education}
+        - Skills: {skills}
+        - Experience: {experience}
+        - Projects: {projects}
+        Format it as a well-structured resume with sections and proper formatting.
+        """
     
     try:
         response = model.generate_content(prompt)
@@ -290,6 +291,31 @@ def search_scholarships():
             "total": len(matches),
             "search_criteria": criteria
         })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/search-learning-centers', methods=['POST'])
+def search_learning_centers():
+    data = request.json
+    if not data or 'location' not in data:
+        return jsonify({"error": "Location is required"}), 400
+        
+    location = data['location']
+    try:
+        # Use Google Places API to search for learning centers
+        search_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
+        params = {
+            'query': f'learning center tuition center education center in {location}',
+            'key': GOOGLE_MAPS_API_KEY
+        }
+        
+        response = requests.get(search_url, params=params)
+        if response.status_code == 200:
+            results = response.json()
+            return jsonify(results)
+        else:
+            return jsonify({"error": "Failed to fetch learning centers"}), 500
+            
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

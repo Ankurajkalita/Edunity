@@ -1,7 +1,7 @@
 # Edunity - AI-Powered Education Platform
 
 ## 🎓 Project Overview
-Edunity is an innovative AI-powered education platform designed to democratize access to quality education and career guidance. Our platform combines personalized AI mentoring, resource management, and community features to create a comprehensive learning ecosystem.
+Edunity is an innovative AI-powered education platform designed to democratize access to quality education and career guidance. Our platform combines personalized AI mentoring, resource management, and community features to create a comprehensive learning ecosystem. With features like "Find Local Learning Centers", "Skill-Based Micro-Jobs", etc., students with financial issues and students with difficulty finding correct resources will benefit and be able to get quality education.
 
 ## ✨ Key Features
 - **AI Career Mentor**: Personalized guidance using Google's Gemini AI
@@ -18,13 +18,10 @@ Edunity is an innovative AI-powered education platform designed to democratize a
 - **Icons**: Font Awesome
 - **Version Control**: Git
 
-## 🚀 Live Demo
-[Live Demo Link](https://edunity-demo.onrender.com) *(Coming Soon)*
-
 ## 📝 Prerequisites
 - Python 3.9+
 - Google Gemini API Key
-- Modern web browser
+
 
 ## ⚙️ Setup Instructions
 1. Clone the repository:
@@ -65,7 +62,7 @@ Edunity is an innovative AI-powered education platform designed to democratize a
 - **Ankuraj Kalita**
   - Role: Full Stack Developer
   - Contributions:
-    - Application architecture and development
+    - Application development and development
     - AI integration and API implementation
     - UI/UX design and implementation
     - Documentation and deployment
@@ -76,13 +73,9 @@ Edunity addresses several key challenges in education:
 - Democratizes access to educational resources
 - Facilitates community-based learning
 - Streamlines the scholarship search process
+- Provide Micro-job links for students to apply which helps them by spending less time on searching for one on their own
+- Helps students locate free and low cost learning centers near them with just one click
 - Assists in professional development
-
-## 🎥 Demo Video
-[Watch Demo Video](link_to_your_demo_video) *(Coming Soon)*
-
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Ankurajkalita/Edunity/issues).
