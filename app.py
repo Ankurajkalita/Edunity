@@ -4,12 +4,13 @@ from fpdf import FPDF
 from bs4 import BeautifulSoup
 import requests
 import os
-from secret import GEMINI_API_KEY, GOOGLE_MAPS_API_KEY
+
 
 app = Flask(__name__)
 
 # Configure Gemini
-genai.configure(api_key=GEMINI_API_KEY)
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
 model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
 # Load Scholarship Data 
