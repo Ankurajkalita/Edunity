@@ -4,14 +4,29 @@ from fpdf import FPDF
 from bs4 import BeautifulSoup
 import requests
 import os
-
+from secret import GEMINI_API_KEY, GOOGLE_MAPS_API_KEY  # Import API keys from secret.py
 
 app = Flask(__name__)
 
-# Configure Gemini
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
-model = genai.GenerativeModel("gemini-1.5-pro-latest")
+def setup_gemini():
+    try:
+        if not GEMINI_API_KEY:
+            raise ValueError("GEMINI_API_KEY is not set")
+        genai.configure(api_key=GEMINI_API_KEY)
+        model = genai.GenerativeModel("gemini-1.5-pro-latest")  # Using stable version
+        # Test the configuration
+        test_response = model.generate_content("Test")
+        if test_response.text:
+            print("Gemini API configured successfully")
+            return model
+        else:
+            raise Exception("Gemini API test failed")
+    except Exception as e:
+        print(f"Error configuring Gemini API: {str(e)}")
+        return None
+
+# Initialize the model
+model = setup_gemini()
 
 # Load Scholarship Data 
 scholarships = [
@@ -68,23 +83,23 @@ def community():
     # Dummy data for community features
     mentors = [
         {
-            "name": "Dr. Sarah Chen",
+            "name": "Harvard Professor Lecture ",
             "expertise": "Computer Science",
-            "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+            "video_url": "https://youtu.be/LfaMVlDaQ24?si=Gh7gwKP_TR3AIYjL",
             "availability": "Mon, Wed, Fri",
             "rating": 4.9
         },
         {
-            "name": "Prof. James Wilson",
+            "name": "FreeCodeCamp Lecture",
             "expertise": "Data Science",
-            "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+            "video_url": "https://youtu.be/ua-CiDNNj30?si=ttqb1oShO8mZ4r8Y",
             "availability": "Tue, Thu",
             "rating": 4.8
         },
         {
-            "name": "Dr. Emily Parker",
-            "expertise": "Career Development",
-            "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+            "name": "MIT 6.006 Introduction to Algorithms, Spring 2020",
+            "expertise": "Computer Science",
+            "video_url": "https://youtube.com/playlist?list=PLUl4u3cNGP63EdVPNLG3ToM6LaEUuStEY&si=8xdesLsiGoBEQanj",
             "availability": "Mon-Fri",
             "rating": 4.7
         }
@@ -120,21 +135,21 @@ def community():
             "counselor": "Lisa Thompson",
             "duration": "45 minutes",
             "focus": "Tech Industry",
-            "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ"
+            "video_url": ""
         },
         {
             "title": "Resume Review",
             "counselor": "Michael Brown",
             "duration": "30 minutes",
             "focus": "Job Applications",
-            "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ"
+            "video_url": ""
         },
         {
             "title": "Interview Preparation",
             "counselor": "David Garcia",
             "duration": "60 minutes",
             "focus": "Technical Interviews",
-            "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ"
+            "video_url": ""
         }
     ]
     
@@ -319,6 +334,14 @@ def search_learning_centers():
             
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        "status": "healthy" if model else "api_error",
+        "gemini_configured": model is not None,
+        "api_key_present": bool(GEMINI_API_KEY)
+    })
 
 if __name__ == '__main__':
     # Use environment variable for port with a default of 5000
