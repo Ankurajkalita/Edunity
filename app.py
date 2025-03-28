@@ -40,17 +40,17 @@ scholarships = [
 ]
             
 subjects = {
-                "Programming": [
-                    ("CS50, Harvard", "https://cs50.harvard.edu/"),
-                    ("Python.org", "https://www.python.org/"),
-                    ("freeCodeCamp", "https://www.freecodecamp.org/")
-                ],
-                "Math": [
-                    ("Khan Academy", "https://www.khanacademy.org/"),
-                    ("Harvard University", "https://pll.harvard.edu/subject/mathematics/free"),
-                    ("The Open University", "https://www.open.edu/openlearn/science-maths-technology/free-courses")
-                ],
-                "Science": [
+    "Programming": [
+        ("CS50, Harvard", "https://cs50.harvard.edu/"),
+        ("Python.org", "https://www.python.org/"),
+        ("freeCodeCamp", "https://www.freecodecamp.org/")
+    ],
+    "Math": [
+        ("Khan Academy", "https://www.khanacademy.org/"),
+        ("Harvard University", "https://pll.harvard.edu/subject/mathematics/free"),
+        ("The Open University", "https://www.open.edu/openlearn/science-maths-technology/free-courses")
+    ],
+    "Science": [
         ("Stanford University", "https://ughb.stanford.edu/courses/approved-courses/science-courses-2024-25"),
         ("Yale College", "https://science.yalecollege.yale.edu/academics/faculty-resources/science-courses-without-prerequisite")
     ]
@@ -289,26 +289,52 @@ def summarize_course():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-@app.route('/api/search-scholarships', methods=['POST'])
-def search_scholarships():
+@app.route('/api/search', methods=['POST'])
+def search_api():
     data = request.json
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
-        
-    criteria = data.get('criteria', '')
-    if not isinstance(criteria, str):
-        return jsonify({"error": "Search criteria must be a string"}), 400
+    if not data or 'query' not in data:
+        return jsonify({"error": "No search query provided"}), 400
     
-    try:
-        criteria = criteria.lower()
-        matches = [s for s in scholarships if criteria in s["eligibility"].lower()]
-        return jsonify({
-            "scholarships": matches,
-            "total": len(matches),
-            "search_criteria": criteria
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    query = data.get('query').lower()
+    filter_type = data.get('filter', 'all')
+    
+    results = []
+    
+    # Search in courses
+    if filter_type in ['all', 'courses']:
+        for subject, courses in subjects.items():
+            for course_name, course_url in courses:
+                if query in course_name.lower() or query in subject.lower():
+                    results.append({
+                        "title": course_name,
+                        "url": course_url,
+                        "description": f"Free online course from {subject}",
+                        "type": "course",
+                        "rating": "4.8",
+                        "userCount": "10k+",
+                        "lastUpdated": "2024"
+                    })
+    
+    # Search in scholarships
+    if filter_type in ['all', 'scholarships']:
+        for scholarship in scholarships:
+            if query in scholarship['name'].lower() or query in scholarship['eligibility'].lower():
+                results.append({
+                    "title": scholarship['name'],
+                    "url": scholarship['apply'],
+                    "description": f"Eligibility: {scholarship['eligibility']}",
+                    "type": "scholarship",
+                    "rating": "4.5",
+                    "userCount": "500+",
+                    "lastUpdated": "2024"
+                })
+    
+    return jsonify({
+        "results": results,
+        "total": len(results),
+        "query": query,
+        "filter": filter_type
+    })
 
 @app.route('/api/search-learning-centers', methods=['POST'])
 def search_learning_centers():
@@ -334,14 +360,6 @@ def search_learning_centers():
             
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-@app.route('/api/health', methods=['GET'])
-def health_check():
-    return jsonify({
-        "status": "healthy" if model else "api_error",
-        "gemini_configured": model is not None,
-        "api_key_present": bool(GEMINI_API_KEY)
-    })
 
 if __name__ == '__main__':
     # Use environment variable for port with a default of 5000
