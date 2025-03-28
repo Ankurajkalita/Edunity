@@ -4,215 +4,255 @@
 
 {% block extra_css %}
 <style>
-    .mentor-card, .group-card, .support-card {
+    .community-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    .section-title {
+        color: var(--accent-color);
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    .mentors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+
+    .mentor-card {
+        background: var(--secondary-bg);
+        border-radius: 15px;
+        padding: 1.5rem;
         transition: transform 0.3s ease;
-        background-color: var(--secondary-bg);
-        border: 1px solid rgba(41, 128, 185, 0.2);
+        cursor: pointer;
     }
-    
-    .mentor-card:hover, .group-card:hover, .support-card:hover {
+
+    .mentor-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(41, 128, 185, 0.2);
     }
-    
-    .video-container {
-        position: relative;
-        padding-bottom: 56.25%;
-        height: 0;
-        overflow: hidden;
-        border-radius: 8px;
-        border: 1px solid rgba(41, 128, 185, 0.2);
-        background-color: #0f1923;
+
+    .mentor-name {
+        font-size: 1.2rem;
+        color: var(--accent-color);
+        margin-bottom: 0.5rem;
     }
-    
-    .video-container iframe {
-        position: absolute;
+
+    .mentor-expertise {
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+    }
+
+    .mentor-availability {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+    }
+
+    .mentor-rating {
+        color: #FFD700;
+        margin-bottom: 1rem;
+    }
+
+    .watch-btn {
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .watch-btn:hover {
+        background: var(--accent-hover);
+    }
+
+    /* Video Modal Styles */
+    .video-modal {
+        display: none;
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .video-modal.active {
+        display: flex;
+    }
+
+    .video-container {
+        position: relative;
+        width: 90%;
+        max-width: 800px;
+        aspect-ratio: 16/9;
+    }
+
+    .video-container iframe {
+        width: 100%;
+        height: 100%;
         border: none;
+        border-radius: 10px;
     }
-    
-    .rating {
-        color: #ffd700;
-    }
-    
-    .section-header {
-        color: #ffffff;
-        text-shadow: 1px 1px 2px rgba(41, 128, 185, 0.3);
-        margin-bottom: 1.5rem;
-    }
-    
-    .badge-custom {
-        background-color: var(--accent-color);
+
+    .close-modal {
+        position: absolute;
+        top: -40px;
+        right: 0;
         color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        background: none;
         border: none;
-    }
-
-    .card {
-        background-color: var(--secondary-bg);
-    }
-
-    .card-title {
-        color: #ffffff;
-        text-shadow: 1px 1px 2px rgba(41, 128, 185, 0.2);
-    }
-
-    .card-text, .list-unstyled li {
-        color: #ffffff;
-    }
-
-    .text-muted {
-        color: var(--text-muted) !important;
-    }
-
-    .card-body i {
-        color: var(--accent-color);
-    }
-
-    .list-unstyled li i {
-        margin-right: 8px;
-    }
-
-    .btn-primary {
-        background-color: var(--accent-color);
-        border: none;
-        box-shadow: 0 4px 10px rgba(41, 128, 185, 0.2);
-    }
-
-    .btn-primary:hover {
-        background-color: #2472a4;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(41, 128, 185, 0.3);
-    }
-
-    .progress {
-        background-color: rgba(41, 128, 185, 0.1);
-        height: 8px;
-        border-radius: 4px;
-    }
-
-    .progress-bar {
-        background-color: var(--accent-color);
-    }
-
-    .tech-stack {
-        display: inline-block;
-        padding: 0.25rem 0.5rem;
-        margin: 0.25rem;
-        background-color: rgba(41, 128, 185, 0.1);
-        border-radius: 4px;
-        font-size: 0.875rem;
+        padding: 0.5rem;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <h1 class="text-center mb-5 section-header">🤝 Community Hub</h1>
-    
-    <!-- Expert Mentors Section -->
-    <section class="mb-5">
-        <h2 class="section-header">
-            <i class="fas fa-chalkboard-teacher"></i> Expert Mentors
-        </h2>
-        <div class="row">
-            {% for mentor in mentors %}
-            <div class="col-md-4 mb-4">
-                <div class="card mentor-card h-100">
-                    <div class="video-container">
-                        <iframe src="{{ mentor.video_url }}" allowfullscreen></iframe>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ mentor.name }}</h5>
-                        <p class="card-text">
-                            <span class="badge badge-custom">{{ mentor.expertise }}</span>
-                        </p>
-                        <p class="card-text">
-                            <small class="text-muted">Available: {{ mentor.availability }}</small>
-                        </p>
-                        <p class="rating">
-                            {% for _ in range(mentor.rating|int) %}⭐{% endfor %}
-                            <small class="text-muted">({{ mentor.rating }})</small>
-                        </p>
-                        <button class="btn btn-primary btn-sm">Schedule Session</button>
-                    </div>
-                </div>
+<div class="community-container">
+    <h1 class="section-title">Expert Lectures</h1>
+    <div class="mentors-grid">
+        <div class="mentor-card" onclick="openVideoModal('https://youtu.be/LfaMVlDaQ24?si=Gh7gwKP_TR3AIYjL')">
+            <div class="mentor-name">Harvard Professor Lecture</div>
+            <div class="mentor-expertise">Computer Science</div>
+            <div class="mentor-availability">
+                <i class="fas fa-calendar"></i> Mon, Wed, Fri
             </div>
-            {% endfor %}
-        </div>
-    </section>
-    
-    <!-- Study Groups Section -->
-    <section class="mb-5">
-        <h2 class="section-header">
-            <i class="fas fa-users"></i> Study Groups
-        </h2>
-        <div class="row">
-            {% for group in study_groups %}
-            <div class="col-md-4 mb-4">
-                <div class="card group-card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ group.name }}</h5>
-                        <p class="card-text">
-                            <span class="badge badge-custom">{{ group.level }}</span>
-                        </p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-users"></i> {{ group.members }} members</li>
-                            <li><i class="fas fa-clock"></i> {{ group.meeting_time }}</li>
-                            <li><i class="fas fa-book"></i> Studying: {{ group.current_topic }}</li>
-                        </ul>
-                        <button class="btn btn-primary btn-sm">Join Group</button>
-                    </div>
-                </div>
+            <div class="mentor-rating">
+                <i class="fas fa-star"></i> 4.9
             </div>
-            {% endfor %}
+            <button class="watch-btn">
+                <i class="fas fa-play"></i> Watch Lecture
+            </button>
         </div>
-    </section>
-    
-    <!-- Additional Support Resources Section -->
-    <section class="mb-5">
-        <h2 class="section-header">
-            <i class="fas fa-hands-helping"></i> Additional Support Resources
-        </h2>
-        <div class="row">
-            {% for session in support_resources %}
-            <div class="col-md-4 mb-4">
-                <div class="card support-card h-100">
-                    <div class="video-container">
-                        <iframe src="{{ session.video_url }}" allowfullscreen></iframe>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ session.title }}</h5>
-                        <p class="card-text">
-                            <span class="badge badge-custom">{{ session.focus }}</span>
-                        </p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-user-tie"></i> {{ session.counselor }}</li>
-                            <li><i class="fas fa-clock"></i> {{ session.duration }}</li>
-                        </ul>
-                        <button class="btn btn-primary btn-sm">Book Session</button>
-                    </div>
-                </div>
+
+        <div class="mentor-card" onclick="openVideoModal('https://youtu.be/ua-CiDNNj30?si=ttqb1oShO8mZ4r8Y')">
+            <div class="mentor-name">FreeCodeCamp Lecture</div>
+            <div class="mentor-expertise">Data Science</div>
+            <div class="mentor-availability">
+                <i class="fas fa-calendar"></i> Tue, Thu
             </div>
-            {% endfor %}
+            <div class="mentor-rating">
+                <i class="fas fa-star"></i> 4.8
+            </div>
+            <button class="watch-btn">
+                <i class="fas fa-play"></i> Watch Lecture
+            </button>
         </div>
-    </section>
+
+        <div class="mentor-card" onclick="openVideoModal('https://youtube.com/playlist?list=PLUl4u3cNGP63EdVPNLG3ToM6LaEUuStEY&si=8xdesLsiGoBEQanj')">
+            <div class="mentor-name">MIT 6.006 Introduction to Algorithms</div>
+            <div class="mentor-expertise">Computer Science</div>
+            <div class="mentor-availability">
+                <i class="fas fa-calendar"></i> Mon-Fri
+            </div>
+            <div class="mentor-rating">
+                <i class="fas fa-star"></i> 4.7
+            </div>
+            <button class="watch-btn">
+                <i class="fas fa-play"></i> Watch Lecture
+            </button>
+        </div>
+
+        <div class="mentor-card" onclick="openVideoModal('https://youtu.be/x1-SibwIPM4?si=86qr2gWpSwYrKVRm')">
+            <div class="mentor-name">MIT Physics II: Electricity and Magnetism</div>
+            <div class="mentor-expertise">Physics</div>
+            <div class="mentor-availability">
+                <i class="fas fa-calendar"></i> Mon, Wed, Fri
+            </div>
+            <div class="mentor-rating">
+                <i class="fas fa-star"></i> 4.8
+            </div>
+            <button class="watch-btn">
+                <i class="fas fa-play"></i> Watch Lecture
+            </button>
+        </div>
+
+        <div class="mentor-card" onclick="openVideoModal('https://youtu.be/P3FKHH2RzjI?si=OlBDUI8uc9CwSxlQ')">
+            <div class="mentor-name">Introduction to Psychology</div>
+            <div class="mentor-expertise">Psychology</div>
+            <div class="mentor-availability">
+                <i class="fas fa-calendar"></i> Tue, Thu
+            </div>
+            <div class="mentor-rating">
+                <i class="fas fa-star"></i> 4.6
+            </div>
+            <button class="watch-btn">
+                <i class="fas fa-play"></i> Watch Lecture
+            </button>
+        </div>
+
+        <div class="mentor-card" onclick="openVideoModal('https://youtu.be/TyVAU5iGe0k?si=FtdMfq1t2Zsf3Vba')">
+            <div class="mentor-name">Literature Lecture</div>
+            <div class="mentor-expertise">Literature</div>
+            <div class="mentor-availability">
+                <i class="fas fa-calendar"></i> Mon, Wed, Fri
+            </div>
+            <div class="mentor-rating">
+                <i class="fas fa-star"></i> 4.7
+            </div>
+            <button class="watch-btn">
+                <i class="fas fa-play"></i> Watch Lecture
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Video Modal -->
+<div class="video-modal" id="videoModal">
+    <div class="video-container">
+        <button class="close-modal" onclick="closeVideoModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        <iframe id="videoFrame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add click handlers for buttons
-    const buttons = document.querySelectorAll('.btn');
-    buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('This is a demo feature. Booking functionality will be available in the full version.');
-        });
-    });
+function openVideoModal(videoUrl) {
+    const modal = document.getElementById('videoModal');
+    const videoFrame = document.getElementById('videoFrame');
+    
+    // Convert YouTube URL to embed URL
+    let embedUrl = videoUrl;
+    if (videoUrl.includes('youtube.com/playlist')) {
+        embedUrl = videoUrl;
+    } else if (videoUrl.includes('youtu.be')) {
+        embedUrl = videoUrl.replace('youtu.be', 'www.youtube.com/embed');
+    } else if (videoUrl.includes('youtube.com')) {
+        embedUrl = videoUrl.replace('watch?v=', 'embed/');
+    }
+    
+    videoFrame.src = embedUrl;
+    modal.classList.add('active');
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    const videoFrame = document.getElementById('videoFrame');
+    videoFrame.src = '';
+    modal.classList.remove('active');
+}
+
+// Close modal when clicking outside
+document.getElementById('videoModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeVideoModal();
+    }
 });
 </script>
 {% endblock %} 
