@@ -39,4 +39,4 @@ Thumbs.db
 # Application specific
 secret.py
 *.log
-instance/ 
+instance/
